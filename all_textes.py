@@ -3,6 +3,11 @@ import sqlite3
 import random
 import csv
 
+last_biome = None
+last_weapon = None
+last_food = None
+last_animal = None
+
 #BIOMES
 def select_random_biome():
     conn = sqlite3.connect('DB\silence.db')
@@ -72,7 +77,6 @@ def read_food_from_csv():
 #text animal
 change_food_first="Tu entrevois au sol une chose alléchante, tu te baisses et tu t'aperçois"
 
-
 #ANIMALS
 def select_random_animal(biome_id):
     conn = sqlite3.connect('DB\silence.db')
@@ -96,14 +100,12 @@ def read_animal_from_csv():
 #text animal
 change_animal_first='Tu vois un mouvement au loin, tu t approche et tu vois'
 
-
 #beginning
 nomduperso=None
 with open('CSV\\configuration_actuelle.csv', 'r') as file:
         reader = csv.reader(file, delimiter=';')
         for row in reader:
             nomduperso=row[0]
-print(nomduperso)
 conn = sqlite3.connect('DB\silence.db')
 c = conn.cursor()
 write_biome_to_csv(select_random_biome())
@@ -131,10 +133,14 @@ def boucle():
         biome_id=7
     return biome_id
 
-
 biome_id=boucle()
 
-
+#fonction pour non-repetition
+def select_unique_event(select_function, last_event):
+    new_event = select_function()
+    while new_event == last_event:
+        new_event = select_function()
+    return new_event
 
 def rien_a_faire():
     rand=random.randint(1,3)
@@ -152,43 +158,53 @@ def rien_a_faire():
         nothing2="Calmement, et à ton réveil, tu te sens reposé."
     return nothing1, nothing2
 
-
-
 def change():
-    conn = sqlite3.connect('DB\silence.db')
+    global last_biome
+    conn = sqlite3.connect('DB/silence.db')
     c = conn.cursor()
-    write_biome_to_csv(select_random_biome())
+    new_biome = select_unique_event(select_random_biome, last_biome)
+    write_biome_to_csv(new_biome)
+    last_biome = new_biome
     conn.commit()
     conn.close()
-    changement_de_biome='Tu viens de changer de biome, tu es maintenant ' +  str(read_biome_from_csv()) +'.'
+    changement_de_biome = 'Tu viens de changer de biome, tu es maintenant ' + str(read_biome_from_csv()) + '.'
     return changement_de_biome
 
 def weapons():
-    biome_id=boucle()
-    conn = sqlite3.connect('DB\silence.db')
-    c=conn.cursor()
-    write_weapon_to_csv(select_random_weapon(biome_id))
+    global last_weapon
+    biome_id = boucle()
+    conn = sqlite3.connect('DB/silence.db')
+    c = conn.cursor()
+    new_weapon = select_unique_event(lambda: select_random_weapon(biome_id), last_weapon)
+    write_weapon_to_csv(new_weapon)
+    last_weapon = new_weapon
     conn.commit()
     conn.close()
-    changement_de_weapon = (" que c'est " + str(read_weapon_from_csv()) + '.')
+    changement_de_weapon = " que c'est " + str(read_weapon_from_csv()) + '.'
     return changement_de_weapon
 
 def food():
-    biome_id=boucle()
-    conn = sqlite3.connect('DB\silence.db')
-    c=conn.cursor()
-    write_food_to_csv(select_random_food(biome_id))
+    global last_food
+    biome_id = boucle()
+    conn = sqlite3.connect('DB/silence.db')
+    c = conn.cursor()
+    new_food = select_unique_event(lambda: select_random_food(biome_id), last_food)
+    write_food_to_csv(new_food)
+    last_food = new_food
     conn.commit()
     conn.close()
-    changement_de_food = (" que c'est " + str(read_food_from_csv()) + '.')
+    changement_de_food = " que c'est " + str(read_food_from_csv()) + '.'
     return changement_de_food
 
 def animal():
-    biome_id=boucle()
-    conn = sqlite3.connect('DB\silence.db')
-    c=conn.cursor()
-    write_animal_to_csv(select_random_animal(biome_id))
+    global last_animal
+    biome_id = boucle()
+    conn = sqlite3.connect('DB/silence.db')
+    c = conn.cursor()
+    new_animal = select_unique_event(lambda: select_random_animal(biome_id), last_animal)
+    write_animal_to_csv(new_animal)
+    last_animal = new_animal
     conn.commit()
     conn.close()
-    changement_de_animal = (" que c'est " + str(read_animal_from_csv()) + '.')
+    changement_de_animal = " que c'est " + str(read_animal_from_csv()) + '.'
     return changement_de_animal

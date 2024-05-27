@@ -31,7 +31,7 @@ download1=pygame.image.load("image\download.png").convert_alpha()
 download2=pygame.image.load("image\download2.png").convert_alpha()
 next=pygame.image.load("image\\next.png").convert_alpha()
 
-font_obj = pygame.font.Font('ew_police.ttf', 20)  #
+font_obj = pygame.font.Font('aaew_police.ttf', 20)  #
 
 x=fenetre.get_size()
 

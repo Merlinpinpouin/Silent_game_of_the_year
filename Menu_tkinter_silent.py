@@ -9,18 +9,17 @@ fenetre.title("Silent")
 fenetre.geometry("2000x1200")
 fenetre.bind('<Escape>', lambda e: fenetre.destroy())
 
-# Correction du chemin de l'image de fond
 fond_menu_principale = PhotoImage(file="image/Fond menu principale.png")
 label1 = Label(fenetre, image=fond_menu_principale)
 label1.place(x=0, y=0)
 
-# Création de 2 colonnes de largeur identique pour créer une grille de mise en forme de l'IHM
+# Création de 2 colonnes pour l'ihm
 fenetre.columnconfigure(0, weight=1)
 fenetre.columnconfigure(1, weight=1)
 fenetre.rowconfigure(0, weight=1)
 fenetre.rowconfigure(1, weight=1)
 
-# TOUTES LES VARIABLES ICI
+# TOUTES LES VARIABLES ICI(pas beacoup quand même)
 tab = []
 
 def update_label(labelvar, textvar):
@@ -35,19 +34,16 @@ def update_label(labelvar, textvar):
     with open('CSV\\configuration_actuelle.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow([text])
-    
+
     if text not in tab:
         with open('CSV/Perso_csv/' + text + '.csv', 'w') as new_file:
             new_file.write(",")
         with open('CSV/Tout les perso.csv', 'a') as fp:
             fp.write(text + '\n')
-        print("pas encore")
         subprocess.run(['python', 'silence_v0_1.py'])
-        fenetre.destroy()
     else:
-        print("deja")
         subprocess.run(['python', 'silence_v0_1.py'])
-        fenetre.destroy()
+
 
 Impact = font.Font(family="Impact", size=30, weight="bold")
 bjr = StringVar()
